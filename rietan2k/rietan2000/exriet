@@ -1,0 +1,3 @@
+# execute RIETAN
+# The environment variable RIETAN is defined in .login
+$RIETAN/rietan $1.ins $1.int $1.bkg $1.pat $1.hkl $1.xyz $1.mem $1.ffe $1.fba $1.ffi $1.ffo | tee $1.lst

@@ -1,0 +1,85 @@
+# Synopsis of a command to execute rietan:
+
+# rietan *.ins *.int *.bkg *.pat *.hkl *.xyz *.mem *.ffe *.fba  *.ffi *.ffo | tee *.lst
+
+# *.ins: Input data.
+# *.int: Step-scanned intensity data.
+# *.bkg: Background spectrum.
+# *.pat: Results of rietveld analysis or simulation.
+#        Used to plot a Rietveld-refinement patterns or a simulated pattern.
+# *.hkl: Data for Fourier/D syntheses.
+# *.xyz: ORFFE data (sample.xyz)
+# *.mem: Data for MEM analysis with MEED.
+# *.ffe: A file created by ORFFE for imposing nonlinear constraints.
+# *.fba: A file created by MEED for whole-pattern fitting with RIETAN.
+# *.ffi: An input file storing integrated intensities for Le Bail analysis.
+# *.ffo: An output file storing integrated intensiteis for Sirpow and Le Bail analysis.
+# *.lst: Output file.
+
+# In the above list, '*' may be replaced with any other sample names.
+
+# The directory where 'rietan', 'asfdc', 'spgra', and 'spgri' were stored must be given
+# in a file named ".login", e.g.,
+# setenv RIETAN '/home/izumi/pgm/rietan2000'
+
+########################################################################################
+
+TARGET=rietan
+OUTDIR=./
+FILE1=rietan1
+FILE2=rietan2
+FILE3=rietan3
+FILE4=rietan4
+FILE5=rietan5
+FILE6=math77lib
+FILE7=allunix
+FILE8=jobend
+FILE9=datetime
+
+# For Linux
+FCOMPL=g77
+#FLINK=c++
+FLINK=g77
+FFLAGD=-O3
+CCOMPL=gcc
+CFLAGD=-O
+LFLAGD=-static
+
+# For MkLinux
+#EXOBJ=../_libmoto/libmoto.a 
+# For Other OS
+EXOBJ= 
+
+# Link 
+
+$(OUTDIR)$(TARGET): $(FILE1).o $(FILE2).o $(FILE3).o $(FILE4).o $(FILE5).o $(FILE6).o $(FILE7).o $(FILE8).o  $(FILE9).o
+	$(FLINK) $(LFLAGD) -o $(OUTDIR)$(TARGET) $(FILE1).o $(FILE2).o $(FILE3).o $(FILE4).o $(FILE5).o $(FILE6).o $(FILE7).o $(FILE8).o  $(FILE9).o $(EXOBJ)
+
+# Compile
+
+$(FILE1).o: $(FILE1).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE1).f
+
+$(FILE2).o: $(FILE2).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE2).f
+
+$(FILE3).o: $(FILE3).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE3).f
+
+$(FILE4).o: $(FILE4).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE4).f
+
+$(FILE5).o: $(FILE5).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE5).f
+
+$(FILE6).o: $(FILE6).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE6).f
+
+$(FILE7).o: $(FILE7).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE7).f
+
+$(FILE8).o: $(FILE8).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE8).f
+
+$(FILE9).o: $(FILE9).c
+	$(CCOMPL) $(CFLAGD) -c $(FILE9).c

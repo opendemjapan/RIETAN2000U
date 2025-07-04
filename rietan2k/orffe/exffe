@@ -1,0 +1,5 @@
+# Calculate, sort, and print out interatomic distances 
+# The environment variable ORFFE is defined in .login
+$ORFFE/orffe $1.xyz | tee $1.dst
+
+

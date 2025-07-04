@@ -1,0 +1,128 @@
+Installing and Executing RIETAN-2000 and ORFFE on UNIX/FreeBSD/Linux
+
+RIETAN-2000 is a multi-purpose pattern-fitting system.
+
+ORFFE is a program for calculating geometric structure parameters such as interatomic distances and bond angles:
+
+W. R. Busing, K. O. Martin, and H. A. Levy, Report ORNL-TM-306, Oak Ridge National Laboratory, Tennessee (1964).
+
+Its original program was modified in such a way that five columns are used for giving atom designations (refer to the tail of each user input file, *.ins).
+
+1. How to install RIETAN-2000
+
+RIETAN-2000 can be installed according to the following procedure:
+
+1) The archive file, rietan2000u.tbz, is extracted in an appropriate directory.  The resulting directory named rietan2k contains readme_unix (this document) and three subdirectories, rietan2000, templates, and orffe.
+
+Contents:
+(a) rietan2000
+Source program of RIETAN-2000 (*.f90), its makefiles (makefile_unix and makefile_g77), a shell script (exriet) to execute RIETAN-2000, three database files (asfdc, spgra, and spgri), and shell scripts for converting extensions (f902f and f2f90).  The database files should not be transferred to another directory.
+
+You must compile/link the source program on UNIX, FreeBSD, and Linux by yourself, using makefile_unix (it is specific for Compaq Fortran for Tru64 UNIX Alpha Systems and should be modified) or makefile_g77 for g77, respectively.  Thus, executable files for a variety of CPUs such as Pentium, PowerPC, and Alpha 21264 are easily obtainable.
+
+(b) Templates
+Template files (*.ins) and intensity data files (*.int) for neutron, conventional X-ray, and synchrotron X-ray powder diffraction are contained.
+
+Template files whose names contain 'E' and 'J' just before extensions are those where comments are written in English and Japanese, respectively.  Needless to say, contents of *E.int and *J.int are just the same with each other.
+
+EUC codes are used in template files, *J.ins, written in Japanese; Japanese users must set the KANJI code at EUC in terminal emulators and/or editors.  Many 'hankaku-kana' characters are contained in these files to decrease the number of characters in each line as many as possible.  It should be pointed out that they are converted into 'zenkaku-kana' if these files are attached to mails without compressing them.  This causes exceeding the limit of 80 columns for each line, leading to an error.
+
+1. Neutron powder diffraction
+Tl2223E.ins and Tl2223J.ins for Rietveld analysis with the corresponding intensity files Tl2223E.int and Tl2223J.int, respectively.
+
+2. Powder diffraction with characteristic X rays (Cu K-alpha radiation)
+FapatiteE.ins and FapatiteJ.ins for Rietveld analysis with the corresponding intensity files FapatiteE.int and FapatiteJ.int, respectively.
+
+3. Powder diffraction with characteristic X rays (Cu K-alpha1 radiation)
+Cu3Fe4P6E.ins and Cu3Fe4P6E.int for multi-phase Rietveld analysis (three phases in this case).  No template file written in Japanese is provided at present.  Only profile parameters for the pseudo-Voigt function of Thompson et al. and the asymmetry correction of Howard are effective in Cu3Fe4P6E.ins.
+
+BaSO4E.ins and BaSO4E.int for Le Bail analysis.  Neither template file written in Japanese nor script file for gnuplot is provided at present.  Only NPRFN = 2 is effective in BaSO4E.ins.
+
+4. Synchrotron X-ray powder diffraction
+CimetidineE.ins and CimetidineJ.ins for Rietveld analysis with the corresponding intensity files CimetidineE.int and CimetidineJ.int, respectively.
+
+(c) orffe
+Source program of ORFFE (*.f), its makefiles (makefile_unix and makefile_g77), and a shell script (exffe) to execute ORFFE.  Refer to Sections 4 and 5.
+
+2) Input an environment variable RIETAN in a file named '.login' or a corresponding file in your home directory.  RIETAN is an absolute path for a directory where RIETAN-2000 and the three database files are contained.
+
+For example,
+setenv RIETAN /home/izumi/rietan2k/rietan2000 (in the case of cshell)
+
+3) Compile and link the source program as follows under the directory where the source program of RIETAN-2000 is placed:
+
+(a) UNIX (in the case of DIGITAL Fortran)
+
+The makefile (makefile_unix) included in the distribution file is specific to Compaq Fortran for Tru64 UNIX Alpha Systems; modify it if necessary.
+
+Then, compile and link *.f and datetime.c to obtain an executable binary file, rietan:
+make -f makefile_unix
+
+(b) UNIX/FreeBSD/Linux (g77)
+All the split source programs *.f90 should be renamed *.f.  Use a shell script f902f in the same directory for this purpose.  Another shell script f2f90 converts *.f into *.f90.
+
+In the case of FreeBSD or Linux, check whether or not GCC (GNU Compiler Collection) 3.0 or later has been installed prior to compiling.  If you have already installed GCC 2.95.*, you must install GCC 3.0 or later.  In this case, specify the absolute path of the new compiler in makefile_g77 unless you overwrite GCC 2.95.*.  The Fortran 77 compiler, g77, contained in GCC 2.95.* has a serious bug regarding SELECT CASE, CASE, and END SELECT statements and output the following error message whiel compiling rietan1.f:
+
+g77: Internal compiler error: program f771 got fatal signal 11
+
+Information about GCC and is available from http://gcc.gnu.org/.
+
+Compile and link *.f and datetime.c to obtain an executable binary file, rietan by entering the following command:
+make -f makefile_g77
+
+4) Place exriet under a directory whose path has been set.  For example, in the case of cshell, describe the following line in .cshrc:
+
+set path=($path /home/izumi/shell)
+
+when exriet is stored under /home/izumi/shell.
+
+2. How to execute RIETAN-2000
+
+Suppose that 'sample' is a sample name containing no space in it.  When executing RIETAN-2000, place a pair of files, sample.ins (input file) and sample.int (intensity file), in the same directory, where the following command is input:
+exriet sample
+
+Thanks to a UNIX-compatible command 'tee', the output is not only displayed in the screen but also saved in a file named sample.lst.  In addition, sample.pat (Igor Pro file), sample.hkl (file for fousyn), sample.xyz (ORFFE file), sample.mem (file for MEM analysis by MEED), sample.ffe (file for imposing restraints),  and sample.ffo (file to input integrated intensities for Le Bail refinement) are created according to values of related flags.  The file named sample.ffi, which stores initial integrated intensities for Le Bail refinement, is obtained by renaming sample.ffo as much as is desired.  The file named sample.fba is created by MEED for REMEDY cycles.
+
+The use of Igor Pro (NPAT = 5) is strongly recommended to display and print out sample.pat after transferring it to Windows or Mac OS machines.  Igor Pro is a commercial product of WaveMetrics, Inc. (http://www.wavemetrics.com/).  VMware for Linux (http://www.vmware.com/) enables us to emulate Windows on Linux, which means that Igor Pro can be practically run on Linux.
+
+If free software is preferred to commercial software, please select gnuplot (http://www.gnuplot.info/) or riplx (http://www.bk.tsukuba.ac.jp/~kumazawa/).  You can use gnuplot script files, *.plt, included in the distribution files for Mac OS and Windows by changing the set command as follows: 'set terminal x11'.  With the present version of riplx, INDREF must be set at 0.  Otherwise, riplx will fail in reading in *.pat.
+
+3. How to set up ORFFE
+
+1) Input an environmental variable,  ORFFE, in a file named '.login' in your home directory.  ORFFE is an absolute path for a directory where ORFFE is contained.
+
+For example,
+setenv ORFFE /home/izumi/rietan2k/orffe (in the case of cshell)
+
+2) Under the directory where the source program of ORFFE is placed, type as follows:
+
+(a) UNIX
+make -f makefile_unix
+This makefile (makefile_unix) is specific to Compaq Fortran for Tru64 UNIX Systems; please modify it if necessary.
+
+(b) FreeBSD and Linux (g77)
+make -f makefile_g77
+
+Then, ORFFE is compiled and linked to give an executable binary file, orffe.
+
+3) Place exffe under a directory whose path has been specified.
+
+4. How to execute ORFFE
+
+Suppose that 'sample' is a sample name containing no space in it.  In the directory where a file sample.xyz is contained, input the following command:
+exffe sample
+
+Thanks to a command 'tee', the output is not only displayed in the screen but also saved in a file named sample.dst.
+
+In addition to sample.dst, sample.ffe for imposing restraints on interatomic distances and bond angles is created if NDA > 0 and sample.ffe does not exist in the current directory.
+
+5. Request
+
+Please send any bug reports, comments, and constructive suggestions to the author:
+
+Fujio Izumi
+Advanced Materials Laboratory
+National Institute for Materials Science
+1-1 Namiki, Tsukuba, Ibaraki 305-0044, Japan
+E-mail: IZUMI.Fujio@nims.go.jp
+Web site: http://homepage.mac.com/fujioizumi/index.html

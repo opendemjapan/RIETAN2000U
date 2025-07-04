@@ -1,0 +1,37 @@
+# Makefile for ORFFE
+
+TARGET=orffe
+OUTDIR=./
+FILE1=orffe
+FILE2=dsort
+FILE3=allunix
+
+# Fortran compiler and compile options
+
+FCOMPL=f90
+FFLAGD=-O5
+CCOMPL=cc
+CFLAGD=-O
+# Static link
+LFLAGD=-non_shared
+
+# Loader library-flags
+#EXOBJ= -lm ../_libmoto/libmoto.a
+# For Other OS
+EXOBJ= 
+
+# Link
+
+$(OUTDIR)$(TARGET): $(FILE1).o $(FILE2).o $(FILE3).o
+	$(FCOMPL) -o $(OUTDIR)$(TARGET) $(FILE1).o $(FILE2).o $(FILE3).o $(EXOBJ)
+
+# Compile
+
+$(FILE1).o: $(FILE1).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE1).f
+
+$(FILE2).o: $(FILE2).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE2).f
+
+$(FILE3).o: $(FILE3).f
+	$(FCOMPL) $(FFLAGD) -c $(FILE3).f

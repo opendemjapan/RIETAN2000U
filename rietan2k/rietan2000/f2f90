@@ -1,0 +1,8 @@
+mv rietan1.f rietan1.f90
+mv rietan2.f rietan2.f90
+mv rietan3.f rietan3.f90
+mv rietan4.f rietan4.f90
+mv rietan5.f rietan5.f90
+mv allunix.f allunix.f90
+mv math77lib.f math77lib.f90
+mv jobend.f jobend.f90
